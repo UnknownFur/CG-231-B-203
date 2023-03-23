@@ -1,0 +1,88 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Objetos Geometry en THREE.js</title>
+		<style>
+			body { margin: 0; }
+		</style>
+	</head>
+	<body>
+		<script type="module">
+            import * as THREE from 'https://unpkg.com/three/build/three.module.js';
+            import { OrbitControls } from 'https://unpkg.com/three@0.126.1/examples/jsm/controls/OrbitControls.js';
+			//Creates scene and camera
+            var controls;
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+            //Luces
+            var directionalLight = new THREE.DirectionalLight( 0xFFFB00, 3);
+            directionalLight.position.set(70, 0, 50);
+            scene.add(directionalLight);
+
+            var directionalLight = new THREE.DirectionalLight( 0x001AFF, 3);
+            directionalLight.position.set(-70, 0, -50);
+            scene.add(directionalLight);
+
+            //Creates renderer and adds it to the DOM
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+            //Arreglo de tamaño de los objetos
+
+            const scale = [[ 1, 1, 1 ], [ 1, 10, 10 ], [ 1, 2, 25 ]];
+            var geo = [];
+
+            geo.push(new THREE.SphereGeometry(scale[0][0]));
+            geo.push(new THREE.ConeGeometry(scale[1][0]));
+            geo.push(new THREE.BoxGeometry(scale[2][0]));
+
+            //Arreglo de color y material
+
+            const color = [{color:0xFF0000}, {color:0xD9844C}, {color:0x4CBFD9}];     
+            const material = [new THREE.MeshStandardMaterial(color[0]),new THREE.MeshStandardMaterial(color[1]),new THREE.MeshStandardMaterial(color[2])];
+
+            //objetos
+            const object =[];
+            for (let i=0; i<3; i++) 
+            {
+                object.push(new THREE.Mesh(geo[i], material[i]));
+            }
+
+           //Creaccion de arreglo que añade los objetos a la escena
+
+           for (let i=0; i<3; i++) {
+                scene.add( object[i] );
+            }
+
+            //Desplazamiento en X de los objetos    
+
+            object[1].position.x = 3;
+            object[2].position.x = -3;
+  
+            //Posicion de la camara 
+
+            camera.position.z = 5;
+
+            //Control camara
+            controls = new OrbitControls( camera, renderer.domElement);
+
+            //Funcion donde se le da el movimiento en los ejes a los objetos
+
+            function renderiza() 
+            {
+                requestAnimationFrame( renderiza );
+
+                object[0].rotation.x+= 0.05;
+
+                object[1].rotation.y+= 0.05;
+
+                object[2].rotation.z+= 0.05;
+
+                renderer.render( scene, camera);
+            }
+            renderiza();
+		</script>
+	</body>
+</html>
